@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\SignupRequest;
 use App\Http\Requests\CompanyRequest;
+use App\Http\Requests\UserUpdateRequest;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +28,9 @@ class ValidationMiddleware
         }
         if ($validation_type == "company") {
             app(CompanyRequest::class);
+        }
+        if ($validation_type == "update_user") {
+            app(UserUpdateRequest::class);
         }
 
         // company requests

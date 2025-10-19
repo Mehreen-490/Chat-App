@@ -10,7 +10,6 @@ use App\Mail\SignupVerificationEmail;
 use App\Models\Token;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
@@ -22,10 +21,21 @@ class AuthController extends Controller
         $token = Token::store($user, 'signup_verification_token');
 
         Mail::to($user)->send(new SignupVerificationEmail($user, $token));
-
         return response()->json([
-            "message" => "user signup successfully",
+            "message" => "user signup successfully"
         ], 201);
+    }
+
+    public function update(Request $request)
+    {
+        $profile = $request->file('profile')->store('user_profile');
+        $user = User::edit($request, $profile);
+        return response()->json([
+            "message" => "User updated successfully!",
+            'data' => [
+                'user' => new UserResource($user),
+            ]
+        ]);
     }
 
     public function verifyEmail(Request $req)

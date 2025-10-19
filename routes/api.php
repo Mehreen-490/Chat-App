@@ -18,8 +18,14 @@ Route::middleware(['check_token:signup_verification_token'])
 
 
 Route::middleware(['check_token:login_token'])->group(function () {
-    Route::get('/profile', [AuthController::class, 'profile']);
     Route::get('/logout', [AuthController::class, 'logout']);
+
+    Route::prefix("/profile")->group(function () {
+        Route::get('/', [AuthController::class, 'profile']);
+        Route::post('/update', [AuthController::class, 'update'])->middleware([
+            'check_validation:update_user'
+        ]);
+    });
 
     Route::prefix("/company")->group(function () {
         Route::post('/create', [CompanyController::class, 'create'])->middleware([

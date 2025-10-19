@@ -56,6 +56,9 @@ class EnsureTokenIsValid
             'user_id' => data_get($tokenRecord, 'user_id'),
             'token' => $tokenRecord
         ]);
+
+
+
         $request->setUserResolver(fn() => User::find(data_get($tokenRecord, 'user_id')));
         return $next($request);
     }

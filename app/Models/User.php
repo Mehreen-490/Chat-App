@@ -24,6 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'profile'
     ];
 
     /**
@@ -49,6 +50,39 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return $user;
     }
+    public static function updateName($user, $newName)
+    {
+        $user->update([
+            'name' => $newName
+        ]);
+        return $user;
+    }
+
+    public static function edit($request, $profile)
+    {
+        $user = $request->user();
+
+        $data = [];
+
+        if ($request->filled('name')) {
+            $data['name'] = $request->name;
+        }
+
+        if ($request->filled('password')) {
+            $data['password'] = $request->password;
+        }
+
+        if ($profile) {
+            $data['profile'] = $profile;
+        }
+        if (!empty($data)) {
+            $user->update($data);
+        }
+        return $user;
+    }
+
+
+
 
     public function companies(): HasMany
     {

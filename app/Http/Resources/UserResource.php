@@ -19,8 +19,13 @@ class UserResource extends JsonResource
             "name" => data_get($this, 'name'),
             "email" => data_get($this, 'email'),
             "is_active" => data_get($this, 'is_active'),
+            "profile" => data_get($this, 'profile'),
             "created_at" => data_get($this, 'created_at'),
             "updated_at" => data_get($this, 'updated_at'),
+
+
+
+
         ];
     }
 }
