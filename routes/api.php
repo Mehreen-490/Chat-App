@@ -32,7 +32,7 @@ Route::middleware(['check_token:login_token'])->group(function () {
         Route::post('/delete', [CompanyController::class, 'delete'])->middleware([
             'check_company'
         ]);
-        Route::get('/read', [CompanyController::class, 'read']);
+        Route::get('/read', [CompanyController::class, 'read'])->withTrashed();
     });
 });
 
