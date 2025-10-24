@@ -22,7 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'check_validation' => ValidationMiddleware::class,
             'check_credentials' => EnsureCredentialsAreValid::class,
             'check_active' => EnsureUserIsActive::class,
-            'check_company' => EnsureCompanyExists::class
+            'check_company' => EnsureCompanyExists::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

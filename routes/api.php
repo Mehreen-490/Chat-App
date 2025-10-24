@@ -39,6 +39,15 @@ Route::middleware(['check_token:login_token'])->group(function () {
             'check_company'
         ]);
         Route::get('/read', [CompanyController::class, 'read'])->withTrashed();
+
+        Route::prefix("/member")->group(function () {
+            Route::post('/assign', [CompanyController::class, 'assignMember'])->middleware([
+                'check_validation:member'
+            ]);
+            Route::post('/remove', [CompanyController::class, 'removeMember'])->middleware([
+                'check_validation:member'
+            ]);
+        });
     });
 });
 
