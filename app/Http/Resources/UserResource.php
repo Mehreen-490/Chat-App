@@ -22,10 +22,6 @@ class UserResource extends JsonResource
             "profile" => data_get($this, 'profile'),
             "created_at" => data_get($this, 'created_at'),
             "updated_at" => data_get($this, 'updated_at'),
-
-
-
-
         ];
     }
 }

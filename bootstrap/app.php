@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Middleware\EnsureCompanyExists;
-use App\Http\Middleware\EnsureCredentialsAreValid;
-use App\Http\Middleware\EnsureTokenIsValid;
-use App\Http\Middleware\EnsureUserIsActive;
-use App\Http\Middleware\ValidationMiddleware;
+use App\Http\Middleware\CheckCompany;
+use App\Http\Middleware\CheckCredentials;
+use App\Http\Middleware\CheckToken;
+use App\Http\Middleware\CheckActive;
+use App\Http\Middleware\CheckChannel;
+use App\Http\Middleware\CheckValidation;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,11 +19,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'check_token' => EnsureTokenIsValid::class,
-            'check_validation' => ValidationMiddleware::class,
-            'check_credentials' => EnsureCredentialsAreValid::class,
-            'check_active' => EnsureUserIsActive::class,
-            'check_company' => EnsureCompanyExists::class,
+            'check_token' => CheckToken::class,
+            'check_validation' => CheckValidation::class,
+            'check_credentials' => CheckCredentials::class,
+            'check_active' => CheckActive::class,
+            'check_company' => CheckCompany::class,
+            'check_channel' => CheckChannel::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

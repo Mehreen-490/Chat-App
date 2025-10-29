@@ -18,6 +18,7 @@ class CompanyResource extends JsonResource
             "id" => data_get($this, 'id'),
             "name" => data_get($this, 'name'),
             "creator" => new UserResource($this->creator),
+            "members" => UserResource::collection($this->members()->get()),
             "deleted_at" => data_get($this, 'deleted_at'),
             "updated_at" => data_get($this, 'updated_at'),
             "created_at" => data_get($this, 'updated_at'),

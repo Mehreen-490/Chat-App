@@ -2,12 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Company;
+use App\Models\Channel;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureCompanyExists
+class CheckChannel
 {
     /**
      * Handle an incoming request.
@@ -16,22 +16,18 @@ class EnsureCompanyExists
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $company_id = $request->input('company_id');
-
+        $channelId = data_get($request, 'channel_id');
         $authUser = $request->user();
-
-        $comapny = Company::where('id', $company_id)
+        $channel = Channel::where('id', $channelId)
             ->where('creator_id', data_get($authUser, 'id'))
             ->first();
-        if (!$comapny) {
+        if (!$channel) {
             return response()->json([
-                'message' => 'Invalid company id given'
+                'messaage' => 'Invalid channel id given!'
             ], 400);
         }
-
         $request->merge([
-            'company' => $comapny,
-            'auth_user' => $authUser
+            'channel' => $channel
         ]);
         return $next($request);
     }

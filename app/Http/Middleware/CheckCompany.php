@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Company;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureUserIsActive
+class CheckCompany
 {
     /**
      * Handle an incoming request.
@@ -15,12 +16,22 @@ class EnsureUserIsActive
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
-        if (!$user->is_active) {
+        $company_id = $request->input('company_id');
+
+        $authUser = $request->user();
+
+        $comapny = Company::where('id', $company_id)
+            ->where('creator_id', data_get($authUser, 'id'))
+            ->first();
+        if (!$comapny) {
             return response()->json([
-                'message' => "Activate your account!",
-            ], 403);
+                'message' => 'Invalid company id given'
+            ], 400);
         }
+
+        $request->merge([
+            'company' => $comapny,
+        ]);
         return $next($request);
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\SignupRequest;
 use App\Http\Resources\CompanyResource;
 use App\Http\Resources\UserResource;
+use App\Jobs\SendSignupVerificationEmail;
 use App\Mail\SignupVerificationEmail;
 use App\Models\Token;
 use App\Models\User;
@@ -14,13 +15,12 @@ use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
-    public function signup(SignupRequest $req)
+    public function signup(Request $request)
     {
-        $user = User::store($req);
+        $user = User::store($request);
 
         $token = Token::store($user, 'signup_verification_token');
-
-        Mail::to($user)->send(new SignupVerificationEmail($user, $token));
+        SendSignupVerificationEmail::dispatch($user, $token)->onQueue('verification_queue');
         return response()->json([
             "message" => "user signup successfully"
         ], 201);

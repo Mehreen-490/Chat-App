@@ -18,6 +18,11 @@ class Company extends Model
         return $this->belongsTo(User::class, 'creator_id');
     }
 
+    public function members()
+    {
+        return $this->belongsToMany(User::class);
+    }
+
     public static function store($user, $compnay_name)
     {
         return self::create([
