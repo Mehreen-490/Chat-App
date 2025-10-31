@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Channel;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ChannelController extends Controller
@@ -18,7 +19,6 @@ class ChannelController extends Controller
                 'name' => $request->name,
                 'type' => $request->type,
                 'company_id' => $request->company_id,
-                // 'authUser' => $request->user(),
                 'channel' => $channel
             ]
         ]);
@@ -47,6 +47,31 @@ class ChannelController extends Controller
 
         return response()->json([
             'message' => 'Channel deleted successfully!'
+        ]);
+    }
+
+
+    public function assignMember(Request $request)
+    {
+        $userIds = data_get($request, 'user_ids');
+        $channel = data_get($request, 'channel');
+
+        $channel->users()->syncWithoutDetaching($userIds);
+
+        return response()->json([
+            'message' => 'User assigned as member successfully!',
+        ]);
+    }
+
+    public function removeMember(Request $request)
+    {
+        $userIds = data_get($request, 'user_ids');
+        $channel = data_get($request, 'channel');
+
+        $channel->users()->detach($userIds);
+
+        return response()->json([
+            'message' => 'Members deleted successfully!'
         ]);
     }
 }

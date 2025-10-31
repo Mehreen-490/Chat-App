@@ -62,7 +62,7 @@ class CompanyController extends Controller
         // Getting user IDs from emails
         $userIds = User::whereIn('email', $userEmails)->pluck('id');
 
-        $company->users()->attach($userIds);
+        $company->users()->syncWithoutDetaching($userIds);
 
         return response()->json([
             'message' => 'User assigned as member successfully!'

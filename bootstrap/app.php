@@ -5,6 +5,7 @@ use App\Http\Middleware\CheckCredentials;
 use App\Http\Middleware\CheckToken;
 use App\Http\Middleware\CheckActive;
 use App\Http\Middleware\CheckChannel;
+use App\Http\Middleware\CheckChannelCompanyMember;
 use App\Http\Middleware\CheckValidation;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -24,7 +25,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'check_credentials' => CheckCredentials::class,
             'check_active' => CheckActive::class,
             'check_company' => CheckCompany::class,
-            'check_channel' => CheckChannel::class
+            'check_channel' => CheckChannel::class,
+            'check_channel_company_member' => CheckChannelCompanyMember::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

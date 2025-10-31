@@ -12,6 +12,13 @@ class Channel extends Model
         'creator_id',
         'company_id'
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'channel_user')->withTimestamps();
+    }
+
+
     public static function  store($user, $request)
     {
         return self::create([

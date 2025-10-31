@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\SignupRequest;
+use App\Http\Requests\ChannelMemberRequest;
 use App\Http\Requests\ChannelRequest;
 use App\Http\Requests\ChannelUpdateRequest;
 use App\Http\Requests\CompanyRequest;
@@ -24,25 +25,28 @@ class CheckValidation
     {
         // auth requests
         if ($validation_type == "signup") {
-            app(SignupRequest::class)->validateResolved();
+            app(SignupRequest::class);
         }
         if ($validation_type == "login") {
-            app(LoginRequest::class)->validateResolved();
+            app(LoginRequest::class);
         }
         if ($validation_type == "company") {
-            app(CompanyRequest::class)->validateResolved();
+            app(CompanyRequest::class);
         }
         if ($validation_type == "update_user") {
-            app(UserUpdateRequest::class)->validateResolved();
+            app(UserUpdateRequest::class);
         }
         if ($validation_type == "member") {
-            app(MemberRequest::class)->validateResolved();
+            app(MemberRequest::class);
         }
         if ($validation_type == "channel") {
-            app(ChannelRequest::class)->validateResolved();
+            app(ChannelRequest::class);
         }
         if ($validation_type == "update_channel") {
-            app(ChannelUpdateRequest::class)->validateResolved();
+            app(ChannelUpdateRequest::class);
+        }
+        if ($validation_type == "channel_member") {
+            app(ChannelMemberRequest::class);
         }
 
         // company requests

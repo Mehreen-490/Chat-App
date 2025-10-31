@@ -62,6 +62,23 @@ Route::middleware(['check_token:login_token'])->group(function () {
             Route::post('/delete', [ChannelController::class, 'delete'])->middleware([
                 'check_channel'
             ]);
+
+            Route::prefix("/member")->group(function () {
+                Route::post('/assign', [ChannelController::class, 'assignMember'])
+                    ->middleware([
+                        'check_channel',
+                        'check_validation:channel_member',
+                        'check_channel_company_member'
+                    ])
+                ;
+                Route::post('/remove', [ChannelController::class, 'removeMember'])
+                    ->middleware([
+                        'check_channel',
+                        'check_validation:channel_member',
+                        'check_channel_company_member'
+                    ])
+                ;
+            });
         });
     });
 });

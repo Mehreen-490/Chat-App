@@ -40,6 +40,15 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    public function companies(): HasMany
+    {
+        return $this->hasMany(Company::class, 'creator_id')->withTrashed();
+    }
+    public function channels()
+    {
+        return $this->belongsToMany(Channel::class);
+    }
+
     public static function store($data)
     {
         $user = new User();
@@ -79,13 +88,5 @@ class User extends Authenticatable implements MustVerifyEmail
             $user->update($data);
         }
         return $user;
-    }
-
-
-
-
-    public function companies(): HasMany
-    {
-        return $this->hasMany(Company::class, 'creator_id')->withTrashed();
     }
 }
