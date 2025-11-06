@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\SignupRequest;
 use App\Http\Resources\CompanyResource;
 use App\Http\Resources\UserResource;
 use App\Jobs\SendSignupVerificationEmail;
-use App\Mail\SignupVerificationEmail;
+use App\Mail\ResetPasswordEmail;
 use App\Models\Token;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -24,6 +22,38 @@ class AuthController extends Controller
         return response()->json([
             "message" => "user signup successfully"
         ], 201);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $email = $request->email;
+        $user = User::where('email', $email)->first();
+        $token = Token::store($user, 'reset_password_token');
+
+        // // Mail::to($this->user)->send(new SignupVerificationEmail($this->user, $this->token));
+        Mail::to($user)->send(new ResetPasswordEmail($user, $token));
+
+
+        return response()->json([
+            'message' => 'Reset Password using token',
+            'data' => [
+                'token' => $token->token
+            ]
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $email = data_get($request, 'email');
+        $password = data_get($request, 'password');
+
+        $user = User::where('email', $email)->first();
+
+        $user = User::resetPassword($user, $password);
+
+        return response()->json([
+            'message' => 'Password reset successfully!'
+        ]);
     }
 
     public function update(Request $request)
@@ -79,6 +109,8 @@ class AuthController extends Controller
             ]
         ]);
     }
+
+
 
     public function logout(Request $req)
     {

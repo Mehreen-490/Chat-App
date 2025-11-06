@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CheckChannelCompanyMember
+class CheckChannelCompanyMembers
 {
     /**
      * Handle an incoming request.
@@ -19,23 +19,23 @@ class CheckChannelCompanyMember
     public function handle(Request $request, Closure $next): Response
     {
         $channelId = data_get($request, 'channel_id');
-        $athUser = $request->user();
-        $authUserId = $athUser->id;
+        $userIds = $request->user_ids;
         $companyId = Channel::where('id', $channelId)->value('company_id');
 
-        $isMember = Company::find($companyId)
+        $companyUserIds = Company::find($companyId)
             ->users()
-            ->where('company_user.user_id', $authUserId)
-            ->exists();
+            ->whereIn('company_user.user_id', $userIds)
+            ->pluck('users.id')
+            ->toArray();
 
-        if (!$isMember) {
+
+        $invalidUserIds = array_diff($userIds, $companyUserIds);
+
+        if (count($invalidUserIds)) {
             throw new HttpResponseException(response()->json([
-                'message' => 'Authenticated user is not a member of the company owning this channel.'
-            ], 403));
+                'message' => 'Invalid user IDs given: ' . implode(', ', $invalidUserIds)
+            ], 400));
         }
-
-        // ✅ Merge the user_id back into the request
-        $request->merge(['sender_id' => $authUserId]);
 
         return $next($request);
     }

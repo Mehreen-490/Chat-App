@@ -66,6 +66,13 @@ class User extends Authenticatable implements MustVerifyEmail
         ]);
         return $user;
     }
+    public static function resetPassword($user, $password)
+    {
+        $user->update([
+            'password' => $password
+        ]);
+        return $user;
+    }
 
     public static function edit($request, $profile)
     {

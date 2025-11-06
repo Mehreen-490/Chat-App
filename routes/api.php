@@ -3,9 +3,29 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/signup', [AuthController::class, 'signup']);
+Route::post('/signup', [AuthController::class, 'signup'])
+    ->middleware([
+        'check_validation:signup'
+    ]);
+
+
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
+    ->middleware([
+        'check_validation:forgotPassword'
+    ]);
+
+Route::post('/reset-password/{token}', [AuthController::class, 'resetPassword'])
+    ->middleware([
+        'check_token:reset_password_token',
+        'check_validation:resetPassword'
+    ]);
+
+
+
+
 
 Route::post('/login', [AuthController::class, 'login'])
     ->middleware([
@@ -51,6 +71,7 @@ Route::middleware(['check_token:login_token'])->group(function () {
                 'check_validation:member'
             ]);
         });
+
         Route::prefix('/channel')->group(function () {
             Route::post('/create', [ChannelController::class, 'create'])->middleware([
                 'check_validation:channel'
@@ -68,16 +89,45 @@ Route::middleware(['check_token:login_token'])->group(function () {
                     ->middleware([
                         'check_channel',
                         'check_validation:channel_member',
-                        'check_channel_company_member'
+                        'check_channel_company_members'
                     ])
                 ;
                 Route::post('/remove', [ChannelController::class, 'removeMember'])
                     ->middleware([
                         'check_channel',
                         'check_validation:channel_member',
-                        'check_channel_company_member'
+                        'check_channel_company_members'
                     ])
                 ;
+            });
+
+            Route::prefix('/message')->group(function () {
+                Route::post('/create', [MessageController::class, 'create'])->middleware([
+                    'check_validation:message_create',
+                    'check_company',
+                    'check_channel',
+                    'check_channel_company_member'
+                ]);
+                Route::post('/update', [MessageController::class, 'update'])->middleware([
+                    'check_validation:message_update',
+                    'check_company',
+                    'check_channel',
+                    'check_channel_member',
+                    'check_message',
+                    'check_message_sender',
+                ]);
+                Route::post('/delete', [MessageController::class, 'delete'])->middleware([
+                    'check_company',
+                    'check_channel',
+                    'check_channel_member',
+                    'check_message',
+                    'check_message_sender'
+                ]);
+                Route::post('/read', [MessageController::class, 'read'])->middleware([
+                    'check_company',
+                    'check_channel',
+                    'check_channel_member'
+                ]);
             });
         });
     });
